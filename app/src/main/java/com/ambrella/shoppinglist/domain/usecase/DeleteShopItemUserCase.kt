@@ -5,7 +5,7 @@ import com.ambrella.shoppinglist.domain.repository.ShopListRepository
 
 class DeleteShopItemUserCase(private val shopListRepository: ShopListRepository) {
 
-        fun deleteShopItem(shopitem: Shopitem){
+      suspend  fun deleteShopItem(shopitem: Shopitem){
             shopListRepository.deleteShopItem(shopitem)
         }
 
