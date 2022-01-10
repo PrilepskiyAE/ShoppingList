@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "shop_items")
 data class ShopItemEntity(
-    @PrimaryKey val id:Int,
+    @PrimaryKey(autoGenerate = true) val id:Int=0,
     @ColumnInfo(name="name") val name:String,
     @ColumnInfo(name="colum") val count: Int,
     @ColumnInfo(name="enabled") val enabled: Int

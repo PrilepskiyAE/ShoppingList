@@ -1,21 +1,22 @@
 package com.ambrella.shoppinglist.data.database
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ShopDao {
     @Query("SELECT * FROM shop_items")
-    fun getAll(): List<ShopItemEntity>
+   fun getAll(): Flow<List<ShopItemEntity>>
 
     @Query("SELECT * FROM shop_items WHERE id IN (:itemIds)")
-    fun loadAllByIds(itemIds: IntArray): List<ShopItemEntity>
+   fun loadAllByIds(itemIds: Int): Flow<ShopItemEntity>
 
     @Insert
-    fun insertAll( item: ShopItemEntity)
+  suspend  fun insertAll( item: ShopItemEntity)
 
     @Delete
-    fun delete(item: ShopItemEntity)
+ suspend  fun delete(item: ShopItemEntity)
 
     @Update
-    fun update(item: ShopItemEntity)
+  suspend  fun update(item: ShopItemEntity)
 }
