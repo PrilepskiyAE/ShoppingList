@@ -31,22 +31,34 @@ private val shopDao:ShopDao = db.daoShopItems()
     }
 
 
-    override  fun getShopItem(shopItemId: Int): Flow<ShopItemEntity> {
+    override suspend fun getShopItem(shopItemId: Int): Shopitem {
+        val el=shopDao.loadAllByIds(shopItemId)
 
-
-        return shopDao.loadAllByIds(shopItemId)
+        return  Shopitem(name = el.name, count = el.count, enabled = el.enabled.toBoolean())
     }
 
-     override fun getShopList(): Flow<List<ShopItemEntity>> {
+     override suspend fun getShopList(): List<Shopitem> {
+//TODO Подумать как переделать
+         val list:List<ShopItemEntity> = shopDao.getAll()
+         val result= mutableListOf<Shopitem>()
+         list.forEach {
+             result.add(Shopitem(name = it.name, count = it.count, enabled = it.enabled.toBoolean()))
+         }
 
-      return shopDao.getAll()
+      return result
     }
 
     override suspend fun updateShopItem(shopitem: Shopitem) {
         withContext(backgroundDispatcher){
         shopDao.update(ShopItemEntity(name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+         }
     }
+
+    private fun Boolean.toInt(): Int = if (this) 1 else 0
+    private fun Int.toBoolean(): Boolean = this==1
 }
 
-private fun Boolean.toInt(): Int = if (this) 1 else 0
-}
+
+
+
+

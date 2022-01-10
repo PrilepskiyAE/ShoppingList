@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ShopDao {
     @Query("SELECT * FROM shop_items")
-   fun getAll(): Flow<List<ShopItemEntity>>
+   suspend fun getAll(): List<ShopItemEntity>
 
     @Query("SELECT * FROM shop_items WHERE id IN (:itemIds)")
-   fun loadAllByIds(itemIds: Int): Flow<ShopItemEntity>
+   suspend fun loadAllByIds(itemIds: Int): ShopItemEntity
 
     @Insert
   suspend  fun insertAll( item: ShopItemEntity)

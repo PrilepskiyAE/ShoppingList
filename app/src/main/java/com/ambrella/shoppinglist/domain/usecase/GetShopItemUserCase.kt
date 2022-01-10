@@ -6,7 +6,7 @@ import com.ambrella.shoppinglist.domain.repository.ShopListRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetShopItemUserCase(private val shopListRepository: ShopListRepository) {
-    fun getShopItem(shopItemId:Int): Flow<ShopItemEntity> {
+    suspend fun getShopItem(shopItemId:Int): Shopitem {
       return  shopListRepository.getShopItem(shopItemId)
     }
 }
