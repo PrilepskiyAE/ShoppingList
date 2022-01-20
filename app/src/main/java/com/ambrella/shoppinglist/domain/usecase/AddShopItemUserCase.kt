@@ -4,7 +4,7 @@ import com.ambrella.shoppinglist.domain.Shopitem
 import com.ambrella.shoppinglist.domain.repository.ShopListRepository
 
 class AddShopItemUserCase(private val shopListRepository: ShopListRepository) {
-   fun addShopItem(shopitem: Shopitem){
+  suspend fun addShopItem(shopitem: Shopitem){
        shopListRepository.addShopItem(shopitem)
    }
 }
