@@ -1,5 +1,6 @@
 package com.ambrella.shoppinglist.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
@@ -9,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
 import com.ambrella.shoppinglist.domain.Shopitem
 
-class ShopAdapter : RecyclerView.Adapter<ShopViewHolder>() {
-
+class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ShopViewHolder>() {
+lateinit var onClick: OnClick
     var shoplist= listOf<Shopitem>()
     set(value){
         field=value
@@ -24,20 +25,39 @@ class ShopAdapter : RecyclerView.Adapter<ShopViewHolder>() {
 
     override fun onBindViewHolder(holder: ShopViewHolder, position: Int) {
        val shopitem=shoplist[position]
-        holder.tvName.text=shopitem.name
-        holder.tvCount.text=shopitem.count.toString()
+        holder.init(shopitem)
         holder.itemView.setOnLongClickListener {
-            true
+
+            Log.d("TAG22", "onBindViewHolder: ")
+            onClick.onClickLongItem(shopitem)
         }
+        holder.itemView.setOnClickListener {
+            onClick.onClickItem(shopitem)
+            Log.d("TAG22", "onBindViewHolder: ")
+        }
+
+
+
     }
 
+
+
+    interface OnClick
+    {
+        fun onClickItem(shopitem: Shopitem)
+        fun onClickLongItem(shopitem: Shopitem):Boolean
+
+    }
     override fun getItemCount(): Int =shoplist.size
 
+    class ShopViewHolder(view: View):RecyclerView.ViewHolder(view) {
+        val tvName=view.findViewById<TextView>(R.id.tvTitle)
+        val tvCount=view.findViewById<TextView>(R.id.tvCount)
+        fun init(shopitem: Shopitem) {
+            tvName.text = shopitem.name
+            tvCount.text = shopitem.count.toString()
+        }
 
-}
-class ShopViewHolder(view: View):RecyclerView.ViewHolder(view) {
-    val tvName=view.findViewById<TextView>(R.id.tvTitle)
-    val tvCount=view.findViewById<TextView>(R.id.tvCount)
-
+    }
 
 }

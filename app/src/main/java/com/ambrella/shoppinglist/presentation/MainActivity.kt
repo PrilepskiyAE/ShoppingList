@@ -3,6 +3,7 @@ package com.ambrella.shoppinglist.presentation
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     val viewModel: ShopViewModel by viewModels()
-   private lateinit var adapter: ShopAdapter
+
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -27,28 +28,37 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        setupRecyclerView()
-        var test=0
+        //setupRecyclerView()
+         var adapter: ShopAdapter= ShopAdapter()
+        binding.rView.adapter=adapter
+
         viewModel.shopItems.observe(this) {
-            Log.d("TAG", "onCreate: $it")
+
             adapter.shoplist=it
-            viewModel.getShopList()
+
+
         }
         viewModel.getShopList()
-
+        var test=0
         binding.flButton.setOnClickListener {
-//            viewModel.addShopItem(Shopitem("test",5,true))
-//            observerAction = specificItemAction
+
               viewModel.addShopItem(Shopitem("test+${test++}",3,true))
-//            viewModel.getShopList()
+        }
+        adapter.onClick=object : ShopAdapter.OnClick{
+            override fun onClickItem(shopitem: Shopitem) {
+                Toast.makeText(this@MainActivity, "One Click", Toast.LENGTH_SHORT).show()
+
+            }
+
+            override fun onClickLongItem(shopitem: Shopitem): Boolean {
+                viewModel.updateShopItem(Shopitem(shopitem.name,shopitem.count,false))
+                Toast.makeText(this@MainActivity, "One long Click", Toast.LENGTH_SHORT).show()
+                return true
+            }
         }
 
     }
 
-    private fun setupRecyclerView(){
-    val rvShopList=findViewById<RecyclerView>(R.id.rView)
-       adapter= ShopAdapter()
-        rvShopList.adapter=adapter
-    }
+
 
 }

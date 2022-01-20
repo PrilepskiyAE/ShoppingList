@@ -28,6 +28,7 @@ class ShopViewModel @Inject constructor(private val repository: ShopListReposito
      fun addShopItem(shopitem: Shopitem) {
          viewModelScope.launch {
              AddShopItemUserCase(repository).addShopItem(shopitem)
+             getShopList()
          }
      }
 
