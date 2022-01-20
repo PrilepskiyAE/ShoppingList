@@ -5,51 +5,50 @@ import android.util.Log
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
+import com.ambrella.shoppinglist.databinding.ActivityMainBinding
+import com.ambrella.shoppinglist.domain.Shopitem
 import com.ambrella.shoppinglist.presentation.ViewModel.ShopViewModel
+import com.ambrella.shoppinglist.presentation.adapter.ShopAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var bt:Button
-    val viewModel: ShopViewModel by viewModels()
 
-//    var observerAction: (name: String?, allItems: List<Shopitem>?) -> Unit = { s: String?, list: List<Shopitem>? ->
-//
-//    }
-//
-//    val standardObserverAction: (name: String?, allItems: List<Shopitem>?) -> Unit = { s: String?, list: List<Shopitem>? ->
-//
-//    }
-//
-//    val specificItemAction: (name: String?, allItems: List<Shopitem>?) -> Unit = { s: String?, list: List<Shopitem>? ->
-//        val item = list?.filter {
-//            it.name == s
-//        }
-//
-//        Log.d("TAG", ": $item")
-//    }
+    val viewModel: ShopViewModel by viewModels()
+   private lateinit var adapter: ShopAdapter
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
-        bt=findViewById(R.id.button)
+        setContentView(binding.root)
 
+        setupRecyclerView()
+        var test=0
         viewModel.shopItems.observe(this) {
             Log.d("TAG", "onCreate: $it")
+            adapter.shoplist=it
+            viewModel.getShopList()
         }
+        viewModel.getShopList()
 
-        bt.setOnClickListener {
+        binding.flButton.setOnClickListener {
 //            viewModel.addShopItem(Shopitem("test",5,true))
 //            observerAction = specificItemAction
-
-            viewModel.getShopList()
+              viewModel.addShopItem(Shopitem("test+${test++}",3,true))
+//            viewModel.getShopList()
         }
 
     }
 
-//    override fun onChanged(t: List<Shopitem>?) {
-//        standardObserverAction(null, null)
-//    }
+    private fun setupRecyclerView(){
+    val rvShopList=findViewById<RecyclerView>(R.id.rView)
+       adapter= ShopAdapter()
+        rvShopList.adapter=adapter
+    }
+
 }

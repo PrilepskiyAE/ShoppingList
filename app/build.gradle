@@ -9,6 +9,7 @@ android {
     compileSdk 31
 
     defaultConfig {
+        viewBinding.enabled=true
         applicationId "com.ambrella.shoppinglist"
         minSdk 24
         targetSdk 31
@@ -17,6 +18,13 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    buildFeatures
+            {
+                viewBinding true
+            }
+
+
 
     buildTypes {
         release {
