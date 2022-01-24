@@ -35,6 +35,7 @@ class ShopViewModel @Inject constructor(private val repository: ShopListReposito
      fun deleteShopItem(shopitem: Shopitem) {
          viewModelScope.launch {
              DeleteShopItemUserCase(repository).deleteShopItem(shopitem)
+             getShopList()
          }
      }
 
@@ -54,6 +55,7 @@ class ShopViewModel @Inject constructor(private val repository: ShopListReposito
      {
          viewModelScope.launch {
              UpdateShopItemUserCase(repository).updateShopItem(shopitem)
+             getShopList()
          }
      }
 }

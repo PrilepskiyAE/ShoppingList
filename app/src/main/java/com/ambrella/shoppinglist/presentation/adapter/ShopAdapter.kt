@@ -9,6 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
 import com.ambrella.shoppinglist.domain.Shopitem
+import java.lang.RuntimeException
+
+const val ENABLED=1
+const val DISABLED=2
 
 class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ShopViewHolder>() {
 lateinit var onClick: OnClick
@@ -19,7 +23,16 @@ lateinit var onClick: OnClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
-        val view=LayoutInflater.from(parent.context).inflate(R.layout.item_shop,parent,false)
+
+        val layout=when(viewType){
+            DISABLED -> R.layout.item_shop_dis
+            ENABLED -> R.layout.item_shop
+            else -> {
+                throw RuntimeException("Unknown view type $viewType")
+            }
+        }
+          val  view =LayoutInflater.from(parent.context).inflate(layout,parent,false)
+
         return ShopViewHolder(view)
     }
 
@@ -41,6 +54,16 @@ lateinit var onClick: OnClick
     }
 
 
+    override fun getItemViewType(position: Int): Int {
+        if(shoplist[position].enabled==true)
+        {
+            return ENABLED
+        }else
+        {
+           return DISABLED
+        }
+
+    }
 
     interface OnClick
     {
@@ -55,7 +78,7 @@ lateinit var onClick: OnClick
         val tvCount=view.findViewById<TextView>(R.id.tvCount)
         fun init(shopitem: Shopitem) {
             tvName.text = shopitem.name
-            tvCount.text = shopitem.count.toString()
+            tvCount.text = "${shopitem.count.toString()} ${shopitem.enabled.toString()}"
         }
 
     }

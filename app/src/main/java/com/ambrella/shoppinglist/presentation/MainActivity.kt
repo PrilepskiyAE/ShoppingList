@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         var test=0
         binding.flButton.setOnClickListener {
 
-              viewModel.addShopItem(Shopitem("test+${test++}",3,true))
+              viewModel.addShopItem(Shopitem(name = "test+${test++}", count = 3, enabled = true))
         }
         adapter.onClick=object : ShopAdapter.OnClick{
             override fun onClickItem(shopitem: Shopitem) {
@@ -51,7 +51,19 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onClickLongItem(shopitem: Shopitem): Boolean {
-                viewModel.updateShopItem(Shopitem(shopitem.name,shopitem.count,false))
+                if (shopitem.enabled==true){
+                viewModel.updateShopItem(Shopitem(id = shopitem.id,
+                    name = shopitem.name,
+                    count = shopitem.count,
+                    enabled = false))}
+                else
+                {
+                    viewModel.updateShopItem(Shopitem(id = shopitem.id,
+                        name = shopitem.name,
+                        count = shopitem.count,
+                        enabled = true))
+                }
+
                 Toast.makeText(this@MainActivity, "One long Click", Toast.LENGTH_SHORT).show()
                 return true
             }
