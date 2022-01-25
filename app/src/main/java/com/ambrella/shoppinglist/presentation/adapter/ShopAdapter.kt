@@ -1,43 +1,97 @@
 package com.ambrella.shoppinglist.presentation.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
 import com.ambrella.shoppinglist.domain.Shopitem
+import java.lang.RuntimeException
 
-class ShopAdapter : RecyclerView.Adapter<ShopViewHolder>() {
+const val ENABLED=1
+const val DISABLED=2
 
-    var shoplist= listOf<Shopitem>()
+//class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ShopViewHolder>() {
+class ShopAdapter : ListAdapter<Shopitem, ShopAdapter.ShopViewHolder>(ShopItemDiffCallback()) {
+lateinit var onClick: OnClick
+    /*var shoplist= listOf<Shopitem>()
     set(value){
+        val callback=ShopListDiffCallback(shoplist,value)
+        val diffResult=DiffUtil.calculateDiff(callback)
+        diffResult.dispatchUpdatesTo(this)
         field=value
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
 
+     */
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
-        val view=LayoutInflater.from(parent.context).inflate(R.layout.item_shop,parent,false)
+
+        val layout=when(viewType){
+            DISABLED -> R.layout.item_shop_dis
+            ENABLED -> R.layout.item_shop
+            else -> {
+                throw RuntimeException("Unknown view type $viewType")
+            }
+        }
+          val  view =LayoutInflater.from(parent.context).inflate(layout,parent,false)
+
         return ShopViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ShopViewHolder, position: Int) {
-       val shopitem=shoplist[position]
-        holder.tvName.text=shopitem.name
-        holder.tvCount.text=shopitem.count.toString()
+     //  val shopitem=shoplist[position]
+        val shopitem=getItem(position)
+        holder.init(shopitem)
         holder.itemView.setOnLongClickListener {
-            true
+
+            Log.d("TAG22", "onBindViewHolder: ")
+            onClick.onClickLongItem(shopitem)
         }
+        holder.itemView.setOnClickListener {
+            onClick.onClickItem(shopitem)
+            Log.d("TAG22", "onBindViewHolder: ")
+        }
+
+
+
     }
 
-    override fun getItemCount(): Int =shoplist.size
 
+    override fun getItemViewType(position: Int): Int {
+       // if(shoplist[position].enabled==true)
+        if(getItem(position).enabled)
+        {
+            return ENABLED
+        }else
+        {
+           return DISABLED
+        }
 
-}
-class ShopViewHolder(view: View):RecyclerView.ViewHolder(view) {
-    val tvName=view.findViewById<TextView>(R.id.tvTitle)
-    val tvCount=view.findViewById<TextView>(R.id.tvCount)
+    }
 
+    interface OnClick
+    {
+        fun onClickItem(shopitem: Shopitem)
+        fun onClickLongItem(shopitem: Shopitem):Boolean
+
+    }
+    //override fun getItemCount(): Int =shoplist.size
+
+    class ShopViewHolder(view: View):RecyclerView.ViewHolder(view) {
+        val tvName=view.findViewById<TextView>(R.id.tvTitle)
+        val tvCount=view.findViewById<TextView>(R.id.tvCount)
+        fun init(shopitem: Shopitem) {
+            tvName.text = shopitem.name
+            tvCount.text = "${shopitem.count.toString()} ${shopitem.enabled.toString()}"
+        }
+
+    }
 
 }

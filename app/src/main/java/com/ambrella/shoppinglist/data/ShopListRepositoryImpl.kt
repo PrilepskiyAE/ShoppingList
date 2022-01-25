@@ -15,28 +15,39 @@ class ShopListRepositoryImpl @Inject constructor(db:RoomDatabaseShopItems):ShopL
     }
 
     override suspend fun deleteShopItem(shopitem: Shopitem) {
-        shopDao.delete(ShopItemEntity(name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+        shopDao.delete(ShopItemEntity(id = shopitem.id,name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
     }
 
 
     override suspend fun getShopItem(shopItemName: String): Shopitem {
         val el=shopDao.loadSpecificByName(shopItemName)
 
-        return  Shopitem(name = el.name, count = el.count, enabled = el.enabled.toBoolean())
+        return  Shopitem(
+            name = el.name,
+            count = el.count,
+            enabled = el.enabled.toBoolean(),
+            id = el.id
+        )
     }
 
      override suspend fun getShopList(): List<Shopitem> {
          val list:List<ShopItemEntity> = shopDao.getAll()
          val result= mutableListOf<Shopitem>()
          list.forEach {
-             result.add(Shopitem(name = it.name, count = it.count, enabled = it.enabled.toBoolean()))
+             result.add(Shopitem(name = it.name,
+                 count = it.count,
+                 enabled = it.enabled.toBoolean(),
+                 id = it.id))
          }
 
       return result
     }
 
     override suspend fun updateShopItem(shopitem: Shopitem) {
-        shopDao.update(ShopItemEntity(name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+        shopDao.update(ShopItemEntity(id = shopitem.id, name = shopitem.name,
+            count = shopitem.count,
+            enabled = shopitem.enabled.toInt()))
+
     }
 
     private fun Boolean.toInt(): Int = if (this) 1 else 0
