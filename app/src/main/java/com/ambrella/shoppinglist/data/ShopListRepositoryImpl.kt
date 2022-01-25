@@ -15,7 +15,7 @@ class ShopListRepositoryImpl @Inject constructor(db:RoomDatabaseShopItems):ShopL
     }
 
     override suspend fun deleteShopItem(shopitem: Shopitem) {
-        shopDao.delete(ShopItemEntity(name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+        shopDao.delete(ShopItemEntity(id = shopitem.id,name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
     }
 
 

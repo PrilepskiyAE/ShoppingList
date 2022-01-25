@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
 import com.ambrella.shoppinglist.databinding.ActivityMainBinding
@@ -13,6 +14,7 @@ import com.ambrella.shoppinglist.domain.Shopitem
 import com.ambrella.shoppinglist.presentation.ViewModel.ShopViewModel
 import com.ambrella.shoppinglist.presentation.adapter.ShopAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.shopItems.observe(this) {
 
-            adapter.shoplist=it
+         //adapter.shoplist=it
+           adapter.submitList(it)
 
 
         }
@@ -68,6 +71,25 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         }
+
+        val callback=object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+               // val item=adapter.shoplist[viewHolder.adapterPosition]
+                val item=adapter.currentList[viewHolder.adapterPosition]
+                viewModel.deleteShopItem(item)
+            }
+
+        }
+        val itemTouchHelper=ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(binding.rView)
 
     }
 

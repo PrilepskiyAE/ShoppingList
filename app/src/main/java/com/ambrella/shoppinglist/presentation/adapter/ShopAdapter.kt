@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ambrella.shoppinglist.R
 import com.ambrella.shoppinglist.domain.Shopitem
@@ -14,13 +17,19 @@ import java.lang.RuntimeException
 const val ENABLED=1
 const val DISABLED=2
 
-class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ShopViewHolder>() {
+//class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ShopViewHolder>() {
+class ShopAdapter : ListAdapter<Shopitem, ShopAdapter.ShopViewHolder>(ShopItemDiffCallback()) {
 lateinit var onClick: OnClick
-    var shoplist= listOf<Shopitem>()
+    /*var shoplist= listOf<Shopitem>()
     set(value){
+        val callback=ShopListDiffCallback(shoplist,value)
+        val diffResult=DiffUtil.calculateDiff(callback)
+        diffResult.dispatchUpdatesTo(this)
         field=value
-        notifyDataSetChanged()
+        //notifyDataSetChanged()
     }
+
+     */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
 
@@ -37,7 +46,8 @@ lateinit var onClick: OnClick
     }
 
     override fun onBindViewHolder(holder: ShopViewHolder, position: Int) {
-       val shopitem=shoplist[position]
+     //  val shopitem=shoplist[position]
+        val shopitem=getItem(position)
         holder.init(shopitem)
         holder.itemView.setOnLongClickListener {
 
@@ -55,7 +65,8 @@ lateinit var onClick: OnClick
 
 
     override fun getItemViewType(position: Int): Int {
-        if(shoplist[position].enabled==true)
+       // if(shoplist[position].enabled==true)
+        if(getItem(position).enabled)
         {
             return ENABLED
         }else
@@ -71,7 +82,7 @@ lateinit var onClick: OnClick
         fun onClickLongItem(shopitem: Shopitem):Boolean
 
     }
-    override fun getItemCount(): Int =shoplist.size
+    //override fun getItemCount(): Int =shoplist.size
 
     class ShopViewHolder(view: View):RecyclerView.ViewHolder(view) {
         val tvName=view.findViewById<TextView>(R.id.tvTitle)
