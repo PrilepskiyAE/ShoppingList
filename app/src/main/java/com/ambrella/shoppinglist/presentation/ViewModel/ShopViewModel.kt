@@ -41,7 +41,7 @@ class ShopViewModel @Inject constructor(private val repository: ShopListReposito
 
     fun getShopListItem(name: String) {
         viewModelScope.launch(IO) {
-            _shopItems.postValue(listOf(GetShopItemUserCase.getShopItem(name, repository)))
+            _shopItems.postValue(listOf(GetShopItemUserCase(repository).getShopItem(name)))
         }
     }
 
