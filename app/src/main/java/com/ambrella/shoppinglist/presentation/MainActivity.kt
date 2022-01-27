@@ -1,5 +1,6 @@
 package com.ambrella.shoppinglist.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -20,7 +21,7 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     val viewModel: ShopViewModel by viewModels()
-
+    val list= mutableListOf<Int>()
     private val binding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -45,11 +46,17 @@ class MainActivity : AppCompatActivity() {
         var test=0
         binding.flButton.setOnClickListener {
 
-              viewModel.addShopItem(Shopitem(name = "test+${test++}", count = 3, enabled = true))
+            //  viewModel.addShopItem(Shopitem(name = "test+${test++}", count = 3, enabled = true))
+            val intent= Intent(this@MainActivity,ShopItemActivity::class.java)
+            startActivity(intent)
         }
         adapter.onClick=object : ShopAdapter.OnClick{
             override fun onClickItem(shopitem: Shopitem) {
                 Toast.makeText(this@MainActivity, "One Click", Toast.LENGTH_SHORT).show()
+                val intent= Intent(this@MainActivity,ShopItemActivity::class.java)
+                intent.putExtra("mod",true)
+                intent.putExtra("mod_id",shopitem.id)
+                startActivity(intent)
 
             }
 

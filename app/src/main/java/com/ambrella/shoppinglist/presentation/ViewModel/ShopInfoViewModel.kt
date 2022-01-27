@@ -31,7 +31,7 @@ class ShopInfoViewModel@Inject constructor(private val repository: ShopListRepos
     val shopitemLiveData = _shopitemLiveData as LiveData<Shopitem>
 
 
-    fun getShopListItem(name: String) {
+    fun getShopItem(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
             getShopitemUseCase.getShopItem(name)
         }
@@ -42,7 +42,6 @@ class ShopInfoViewModel@Inject constructor(private val repository: ShopListRepos
         viewModelScope.launch(Dispatchers.IO){
             val name =parseName(inputName)
             val count =  parseCount(inputCount)
-
             if (validateInput(name, count))
                 addShopitemUseCase.addShopItem(Shopitem(name = name, count =count, enabled = true))
 
