@@ -9,5 +9,5 @@ data class ShopItemEntity(
     @PrimaryKey(autoGenerate = true) val id:Int=0,
     @ColumnInfo(name="name") val name:String,
     @ColumnInfo(name="colum") val count: Int,
-    @ColumnInfo(name="enabled") val enabled: Int
+    @ColumnInfo(name="enabled") val enabled: Boolean
 )

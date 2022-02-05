@@ -1,5 +1,7 @@
 package com.ambrella.shoppinglist.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.ambrella.shoppinglist.data.database.RoomDatabaseShopItems
 import com.ambrella.shoppinglist.data.database.ShopDao
 import com.ambrella.shoppinglist.data.database.ShopItemEntity
@@ -9,49 +11,40 @@ import javax.inject.Inject
 
 class ShopListRepositoryImpl @Inject constructor(db:RoomDatabaseShopItems):ShopListRepository {
     private val shopDao:ShopDao = db.daoShopItems()
+    private val mapper = ShopListMapper()
 
     override suspend fun addShopItem(shopitem: Shopitem) {
-        shopDao.insertAll(ShopItemEntity(name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+        shopDao.insertAll(mapper.mapEntityToDbModel(shopitem))
     }
 
     override suspend fun deleteShopItem(shopitem: Shopitem) {
-        shopDao.delete(ShopItemEntity(id = shopitem.id,name = shopitem.name, count = shopitem.count, enabled = shopitem.enabled.toInt()))
+        shopDao.delete(mapper.mapEntityToDbModel(shopitem))
     }
 
 
-    override suspend fun getShopItem(shopItemName: String): Shopitem {
-        val el=shopDao.loadSpecificByName(shopItemName)
+    override suspend fun getShopItem(shopItemID: Int): Shopitem {
+        val el=shopDao.loadAllByIds(shopItemID)
 
-        return  Shopitem(
-            name = el.name,
-            count = el.count,
-            enabled = el.enabled.toBoolean(),
-            id = el.id
-        )
+        return  mapper.mapDbModelToEntity(el)
     }
 
-     override suspend fun getShopList(): List<Shopitem> {
-         val list:List<ShopItemEntity> = shopDao.getAll()
-         val result= mutableListOf<Shopitem>()
-         list.forEach {
-             result.add(Shopitem(name = it.name,
-                 count = it.count,
-                 enabled = it.enabled.toBoolean(),
-                 id = it.id))
-         }
+     override  fun getShopList(): LiveData<List<Shopitem>> = Transformations.map(
+         shopDao.getAll()
+     ){
+         mapper.mapListDbModelToListEntity(it)
+     }
 
-      return result
-    }
+
 
     override suspend fun updateShopItem(shopitem: Shopitem) {
-        shopDao.update(ShopItemEntity(id = shopitem.id, name = shopitem.name,
+        shopDao.insertAll(ShopItemEntity(id = shopitem.id, name = shopitem.name,
             count = shopitem.count,
-            enabled = shopitem.enabled.toInt()))
+            enabled = shopitem.enabled))
 
     }
 
-    private fun Boolean.toInt(): Int = if (this) 1 else 0
-    private fun Int.toBoolean(): Boolean = this==1
+   // private fun Boolean.toInt(): Int = if (this) 1 else 0
+    //private fun Int.toBoolean(): Boolean = this==1
 }
 
 

@@ -16,7 +16,7 @@ class ShopItemActivity : AppCompatActivity() {
     private val binding by lazy {
         ActivityShopItemBinding.inflate(layoutInflater)
     }
-    val mod:Boolean=false
+
     val viewModel: ShopInfoViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,19 +27,15 @@ class ShopItemActivity : AppCompatActivity() {
             viewModel.addShopItem(
                 inputName = binding.etTitle.text.toString(),
                 inputCount = binding.etCount.text.toString()
-                )
+            )
             val intent= Intent(this,MainActivity::class.java)
             startActivity(intent)
         }
 
 
 
-    }
-
-    fun modupd(mod: Boolean){
-
-
 
     }
+
 
 }

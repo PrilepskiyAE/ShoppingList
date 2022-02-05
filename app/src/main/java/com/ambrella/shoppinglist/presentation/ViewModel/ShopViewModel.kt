@@ -24,38 +24,24 @@ class ShopViewModel @Inject constructor(private val repository: ShopListReposito
 
     private val _shopItems = MutableLiveData<List<Shopitem>>(emptyList())
     val shopItems = _shopItems as LiveData<List<Shopitem>>
+    private val getShopListUseCase = GetShopListUserCase(repository)
+    private val deleteShopItemUseCase = DeleteShopItemUserCase(repository)
+    private val editShopItemUseCase = UpdateShopItemUserCase(repository)
 
-     fun addShopItem(shopitem: Shopitem) {
-         viewModelScope.launch {
-             AddShopItemUserCase(repository).addShopItem(shopitem)
-             getShopList()
-         }
-     }
+    val shopList = getShopListUseCase.getShopList()
 
      fun deleteShopItem(shopitem: Shopitem) {
          viewModelScope.launch {
-             DeleteShopItemUserCase(repository).deleteShopItem(shopitem)
-             getShopList()
+             deleteShopItemUseCase.deleteShopItem(shopitem)
+
          }
      }
-
-    fun getShopListItem(name: String) {
-        viewModelScope.launch(IO) {
-            _shopItems.postValue(listOf(GetShopItemUserCase(repository).getShopItem(name)))
-        }
-    }
-
-    fun getShopList() {
-        viewModelScope.launch(IO) {
-            _shopItems.postValue(GetShopListUserCase.getShopList(repository))
-        }
-    }
 
      fun updateShopItem(shopitem: Shopitem)
      {
          viewModelScope.launch {
-             UpdateShopItemUserCase(repository).updateShopItem(shopitem)
-             getShopList()
+             val newItem = shopitem.copy(enabled = !shopitem.enabled)
+             editShopItemUseCase.updateShopItem(newItem)
          }
      }
 }

@@ -31,7 +31,7 @@ class ShopInfoViewModel@Inject constructor(private val repository: ShopListRepos
     val shopitemLiveData = _shopitemLiveData as LiveData<Shopitem>
 
 
-    fun getShopItem(name: String) {
+    fun getShopItem(name: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             getShopitemUseCase.getShopItem(name)
         }

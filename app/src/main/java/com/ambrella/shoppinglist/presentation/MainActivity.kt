@@ -31,19 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
-        //setupRecyclerView()
-         var adapter: ShopAdapter= ShopAdapter()
+         val adapter= ShopAdapter()
         binding.rView.adapter=adapter
 
-        viewModel.shopItems.observe(this) {
+        viewModel.shopList.observe(this) {
 
          //adapter.shoplist=it
            adapter.submitList(it)
 
 
         }
-        viewModel.getShopList()
-        var test=0
+
         binding.flButton.setOnClickListener {
 
             //  viewModel.addShopItem(Shopitem(name = "test+${test++}", count = 3, enabled = true))
@@ -61,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onClickLongItem(shopitem: Shopitem): Boolean {
-                if (shopitem.enabled==true){
+                /*if (shopitem.enabled){
                 viewModel.updateShopItem(Shopitem(id = shopitem.id,
                     name = shopitem.name,
                     count = shopitem.count,
@@ -73,10 +71,18 @@ class MainActivity : AppCompatActivity() {
                         count = shopitem.count,
                         enabled = true))
                 }
-
+*/
                 Toast.makeText(this@MainActivity, "One long Click", Toast.LENGTH_SHORT).show()
+
+                viewModel.updateShopItem(shopitem)
+
                 return true
+
+
+
             }
+
+
         }
 
         val callback=object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT){
